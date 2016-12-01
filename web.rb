@@ -61,6 +61,22 @@ post '/customer/sources' do
   return "Successfully added source."
 end
 
+post '/customer/remove_source' do
+  authenticate!
+  source = params[:source]
+
+  # Removes the specified source from the customer
+  begin
+    @customer.sources.retrieve(source).delete()
+  rescue Stripe::StripeError => e
+    status 402
+    return "Error removing source: #{e.message}"
+  end
+
+  status 200
+  return "Successfully removed source."
+end
+
 post '/customer/default_source' do
   authenticate!
   source = params[:source]
